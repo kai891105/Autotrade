@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+         {
+             "name": "Python: Current File",
+             "type": "python",
+             "request": "launch",
+             "program": "${file}",
+             "console": "integratedTerminal",
+             "cwd": "C:/Users/king8/AppData/Local/Programs/Python/Python311",
+             "env": {
+                 "PYTHONPATH": "C:/Users/king8/AppData/Local/Programs/Python/Python311"
+             }
+         }
+     ]
+ }
+ 

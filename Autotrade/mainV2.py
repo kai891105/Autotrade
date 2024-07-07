@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import mplfinance as mpf
 import sys
+
 local_dir = os.path.dirname(__file__)
 output_file=""
 #s_input = input("輸入股票代碼：")
@@ -17,7 +18,6 @@ s_input = "5269"
 stockbo = s_input + ".TW"
 print(stockbo)
 period_par = "1mo"
-
 
 stock = yf.Ticker(stockbo)
 stock_his = stock.history(period=period_par)
@@ -39,40 +39,51 @@ def save_csv(stockbo, stock_his, period_par):
 
     # 將格式化後的數據寫入 CSV
     stock_his.to_csv(output_file, index=False)
-def main_dash():
+def plt_chinese():
+    plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] # 修改中文字體
+    plt.rcParams['axes.unicode_minus'] = False # 顯示負號
+
+def main_dash(sema,lema):
     global local_dir
     global output_file
     global stockbo
     global stock_his
+    sema=int(sema)
+    lema=int(lema)
+    sema_name="EMA"+str(sema)
+    lema_name="EMA"+str(lema)
     df = stock_his
     #print(df.head())
     df['Date'] = stock_his.index.strftime('%Y-%m-%d %H:%M:%S')
     # 將索引轉換為DatetimeIndex
     df.set_index(pd.to_datetime(df['Date']), inplace=True)
     df.drop(columns=['Date'], inplace=True)
-    mpf.plot(df, type='candle', style='charles', title=stockbo, volume=True)
+    #mpf.plot(df, type='candle', style='charles', title=stockbo, volume=True)
     #EMA為價格的移動平均線
-    df['EMA12'] = df['Close'].ewm(span=12, adjust=False).mean()#短期EMA
-    df['EMA26'] = df['Close'].ewm(span=26, adjust=False).mean()#長期EMA
+    df[sema_name] = df['Close'].ewm(span=sema, adjust=False).mean()#短期EMA
+    df[lema_name] = df['Close'].ewm(span=lema, adjust=False).mean()#長期EMA
     #MACD = 短期EMA-長期EMA
-    df['MACD'] = df['EMA12'] - df['EMA26']
+    df['MACD'] = df[sema_name] - df[lema_name]
     #print(df['EMA12'])
     save_csv(stockbo, df, period_par)
-    '''
-    apdict = [mpf.make_addplot(df['EMA12'], color='blue')]
-    mpf.plot(df, type='candle', style='charles', title=stockbo, volume=True, addplot=apdict)
-    '''
-    # 繪製EMA12的折線圖
-    plt.figure(figsize=(12, 6))
-    plt.plot(df.index, df['EMA12'], label='EMA12', color='blue')
-    plt.title(f'EMA12 for {stockbo}')
-    plt.xlabel('Date')
-    plt.ylabel('EMA12')
-    plt.grid(True)
-    plt.legend()
-    plt.xticks(rotation=45)
+    
+    # 繪製K線圖、EMA12、EMA26和MACD
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 10), gridspec_kw={'height_ratios': [3, 1, 1]})
+    
+    # 繪製K線圖和EMA
+    plt_chinese()
+    mpf.plot(df, type='candle', style='charles', ax=ax1, volume=ax2, show_nontrading=True)
+    ax1.plot(df.index, df[sema_name], label=sema_name, color='blue')
+    ax1.plot(df.index, df[lema_name], label=lema_name, color='red')
+    ax1.set_title(f'K線圖和EMA for {stockbo}')
+    ax1.legend()
+    
+    # 繪製MACD
+    ax3.plot(df.index, df['MACD'], label='MACD', color='green')
+    ax3.set_title('MACD')
+    ax3.legend()
+    
     plt.tight_layout()
     plt.show()
-    
 
-main_dash()
+main_dash(sema_input,lema_input)

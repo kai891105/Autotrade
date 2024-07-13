@@ -39,6 +39,7 @@ def save_csv(stockbo, stock_his, period_par):
 
     # 將格式化後的數據寫入 CSV
     stock_his.to_csv(output_file, index=False)
+    
 def plt_chinese():
     plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] # 修改中文字體
     plt.rcParams['axes.unicode_minus'] = False # 顯示負號
@@ -65,13 +66,14 @@ def main_dash(sema,lema):
     #MACD = 短期EMA-長期EMA
     df['MACD'] = df[sema_name] - df[lema_name]
     #print(df['EMA12'])
+    #資腰整理完後，將數據存入CSV
     save_csv(stockbo, df, period_par)
     
     # 繪製K線圖、EMA12、EMA26和MACD
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 10), gridspec_kw={'height_ratios': [3, 1, 1]})
     
     # 繪製K線圖和EMA
-    plt_chinese()
+    plt_chinese()#解決中文顯示
     mpf.plot(df, type='candle', style='charles', ax=ax1, volume=ax2, show_nontrading=True)
     ax1.plot(df.index, df[sema_name], label=sema_name, color='blue')
     ax1.plot(df.index, df[lema_name], label=lema_name, color='red')

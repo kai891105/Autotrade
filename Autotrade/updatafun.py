@@ -10,8 +10,10 @@ output_file=""
 s_input = "5269"
 stockbo = s_input + ".TW"
 print(stockbo)
+period_input = input("輸入時間週期：")
 
-period_par = "1mo"
+
+period_par = period_input
 stock = yf.Ticker(stockbo)
 stock_his = stock.history(period=period_par)
 

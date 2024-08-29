@@ -15,5 +15,16 @@
 3. backtest.py 為讀取CSV檔案，並使用flask 製作API，逐筆顯示資料
 4. 預先建立backtest-parameter.py的環境，將CSV名稱參數化，未來在查指定個股時，可以直接調用對應的CSV
 
+- 2024/07/27
+1. 建立存放交易紀錄的資料夾
+2. 建立web方案的資料夾
+
+- 2024/08/29
+1.將web方案的資料夾改為web_root
+2.index.py 為web方案的入口，使用dash框架(已完成)
+
+
+
+
 
 

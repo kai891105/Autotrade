@@ -5,6 +5,7 @@ import os
 import mplfinance as mpf
 import sys
 
+
 local_dir = os.path.dirname(__file__)
 output_file=""
 #s_input = input("輸入股票代碼：")
@@ -17,7 +18,7 @@ if(sema_input>lema_input):
 s_input = "5269"
 stockbo = s_input + ".TW"
 print(stockbo)
-period_par = "1mo"
+period_par = "1y"#支援的參數有1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd,max
 
 stock = yf.Ticker(stockbo)
 stock_his = stock.history(period=period_par)
@@ -32,14 +33,14 @@ def save_csv(stockbo, stock_his, period_par):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     output_file = os.path.join(output_folder, stockbo + period_par + '.csv')
-    #print(output_file)
+    print(output_file)
 
     # 格式化日期時間列
     stock_his['Date'] = stock_his.index.strftime('%Y-%m-%d %H:%M:%S')
 
     # 將格式化後的數據寫入 CSV
     stock_his.to_csv(output_file, index=False)
-    
+
 def plt_chinese():
     plt.rcParams['font.sans-serif'] = ['Microsoft JhengHei'] # 修改中文字體
     plt.rcParams['axes.unicode_minus'] = False # 顯示負號
